@@ -11,6 +11,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
         git \
 		unzip \
+		p7zip-full \
         wget \
         cmake \
         ninja-build \

@@ -10,7 +10,7 @@ else
     curl -c ./cookie -s -L "https://drive.google.com/uc?export=download&id=${fileid}" > /dev/null
     curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=`awk '/download/ {print $NF}' ./cookie`&id=${fileid}" -o ${FILE}
     rm ./cookie
-    unzip ${FILE} && rm ${FILE}
+    7z x ${FILE} && rm ${FILE}
 fi
 
 echo "Aggregating statistics of the dataset"
