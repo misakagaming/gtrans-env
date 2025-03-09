@@ -2,6 +2,8 @@ FROM aaii/cuda:9.2-cudnn7-devel-ubuntu18.04
 #FROM nvidia/cuda:12.2.0-devel-ubuntu22.04
 
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+# Python Version x.y
+ARG PYTHON_VERSION=3.6
 ARG PYLUCENE_VERSION=7.4.0
 
 
@@ -21,11 +23,11 @@ RUN add-apt-repository ppa:deadsnakes/ppa
 
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
-		python3-distutils \
-        python3-dev \
+        "python$PYTHON_VERSION-dev" \
+		"python$PYTHON_VERSION-distutils" \
+		python3-setuptools \
         python3-pip \
-        python3-venv \
-		python-is-python3 \
+        "python$PYTHON_VERSION-venv" \
 		libstdc++6 \
 		gcc-multilib\
 		libc6 \
