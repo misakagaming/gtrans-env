@@ -10,6 +10,7 @@ ARG PYLUCENE_VERSION=7.4.0
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
         git \
+		unzip \
         wget \
         cmake \
         ninja-build \
