@@ -4,3 +4,4 @@ nltk
 prettytable
 docopt
 xmltodict
+Pillow
