@@ -72,6 +72,10 @@ RUN cp -r apache-maven-3.8.8 /opt
 RUN export PATH=/opt/apache-maven-3.8.8/bin:$PATH
 RUN echo -e "\nPATH=\"/opt/apache-maven-3.8.8/bin:\$PATH\"" >> ~/.profile
 
+RUN source ~/.profile
+
+RUN mvn -version
+
 RUN rm apache-maven-3.8.8-bin.tar.gz
 
 
