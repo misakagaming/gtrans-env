@@ -66,6 +66,15 @@ RUN ln -s ../../lib amd64
 RUN java --version && javac --version
 
 
+RUN wget https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
+RUN tar -xvf apache-maven-3.8.6-bin.tar.gz
+RUN cp -r apache-maven-3.8.6 /opt
+RUN export PATH=/opt/apache-maven-3.8.6/bin:$PATH
+RUN echo -e "\nPATH=\"/opt/apache-maven-3.8.6/bin:\$PATH\"" >> ~/.profile
+
+RUN rm apache-maven-3.8.6-bin.tar.gz
+
+
 # Installing PyLucene
 RUN which ant && ant -version
 
@@ -136,7 +145,6 @@ RUN /opt/python/venv/base/bin/python -m pip install --force-reinstall torch==1.4
 
 
 COPY GTrans-main .
-
 
 
 
