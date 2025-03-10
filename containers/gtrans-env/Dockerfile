@@ -35,9 +35,6 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 		libc6 \
 		 && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* 
 	
-
-RUN python3 -m pip install --upgrade pip \
-    && python3 -m venv /opt/python3/venv/base
 	
 	
 # ======================== START OF ADDITIONAL INSTALLATION ========================
@@ -54,11 +51,11 @@ RUN apt-get update && \
 
 
 
-#RUN ln -sf $(which python$PYTHON_VERSION) /usr/bin/python
+RUN ln -sf $(which python$PYTHON_VERSION) /usr/bin/python
 
 #RUN python --version
 
-#RUN python -m pip install --upgrade pip
+RUN python -m pip install --upgrade pip
 
 #RUN which python$PYTHON_VERSION && which python && python --version
 
@@ -68,19 +65,73 @@ RUN ln -s ../../lib amd64
 # Java 11
 RUN java --version && javac --version
 
+
+# Installing PyLucene
+RUN which ant && ant -version
+
+RUN apt-get install -y --no-install-recommends \
+    libffi-dev \
+    zlib1g-dev
+
+WORKDIR /usr/src/pylucene
+RUN curl https://archive.apache.org/dist/lucene/pylucene/pylucene-$PYLUCENE_VERSION-src.tar.gz | tar -xz
+
+
+
+ENV PREFIX_PYTHON=/usr \
+    JCC_JDK=/usr/lib/jvm/default-java \
+    ANT=ant \
+    JCC='python -m jcc' \
+    NUM_FILES=10 \
+    PYTHON=python \
+    NO_SHARED=1
+	
+
+
+
+
+RUN mkdir -p "/root/.ant/lib"
+
+WORKDIR /root/.ant/lib
+
+COPY ivy-2.4.0.jar .
+
+WORKDIR /usr/src/pylucene
+
+RUN cd "pylucene-$PYLUCENE_VERSION/lucene-java-$PYLUCENE_VERSION/lucene" && \
+    ant ivy-bootstrap && \
+    ant && \
+    cd ../../../
+
+RUN cd "pylucene-$PYLUCENE_VERSION/jcc" && \
+    ls -la && \
+    NO_SHARED=1 JCC_JDK=/usr/lib/jvm/default-java python setup.py build && \
+    NO_SHARED=1 JCC_JDK=/usr/lib/jvm/default-java python setup.py install && \
+    cd .. && \
+    make JCC="python -m jcc" ANT=ant PYTHON=python NUM_FILES=8&& \
+    make install JCC="python -m jcc" ANT=ant PYTHON=python NUM_FILES=8 && \
+    cd ../../
+
+
+WORKDIR /usr/src
+RUN rm -rf pylucene
+
 WORKDIR /app
 COPY . .
 
 WORKDIR /
 
 
-COPY requirements.txt /opt/python3/venv/base/
+RUN python -m pip install --upgrade pip \
+    && python -m venv /opt/python/venv/base
+
+COPY requirements.txt /opt/python/venv/base/
 
 
 #RUN /opt/python3/venv/base/bin/python3 -m pip install torch==1.9.0+cu111 torchvision==0.10.0+cu111 torchaudio==0.9.0 -f https://download.pytorch.org/whl/torch_stable.html
-RUN /opt/python3/venv/base/bin/python3 -m pip install --upgrade pip
-RUN /opt/python3/venv/base/bin/python3 -m pip install --no-cache-dir -r /opt/python3/venv/base/requirements.txt
-RUN /opt/python3/venv/base/bin/python3 -m pip install --force-reinstall torch==1.4.0+cu92 torchvision==0.5.0+cu92 -f https://download.pytorch.org/whl/torch_stable.html
+RUN /opt/python/venv/base/bin/python -m pip install --upgrade pip
+RUN /opt/python/venv/base/bin/python -m pip install --no-cache-dir -r /opt/python3/venv/base/requirements.txt
+RUN /opt/python/venv/base/bin/python -m pip install --force-reinstall torch==1.4.0+cu92 torchvision==0.5.0+cu92 -f https://download.pytorch.org/whl/torch_stable.html
 
 
 
