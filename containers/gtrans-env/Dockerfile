@@ -66,7 +66,7 @@ RUN ln -s ../../lib amd64
 RUN java --version && javac --version
 
 
-RUN wget https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
+RUN wget https://dlcdn.apache.org/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz
 RUN tar -xvf apache-maven-3.8.6-bin.tar.gz
 RUN cp -r apache-maven-3.8.6 /opt
 RUN export PATH=/opt/apache-maven-3.8.6/bin:$PATH
